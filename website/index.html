@@ -657,7 +657,7 @@
       }
 
       .list li::before {
-        content: "âœ“";
+        content: "+";
         color: var(--green);
         font-weight: 900;
         margin-right: 8px;
@@ -877,7 +877,7 @@
                   <div class="request-head">
                     <div>
                       <div class="request-title">Plumbing: Pipe burst emergency</div>
-                      <div class="request-sub">Unit 204 Â· Water damage risk</div>
+                      <div class="request-sub">Unit 204 - Water damage risk</div>
                     </div>
                     <span class="pill urgent">URGENT</span>
                   </div>
@@ -950,7 +950,7 @@
             <div class="cinema-controls">
               <button class="button" id="startTour" type="button">Start AI voice tour</button>
               <button class="button secondary" id="stopTour" type="button">Stop tour</button>
-              <span class="cinema-status" id="tourStatus">Voice starts after the visitor clicks.</span>
+              <span class="cinema-status" id="tourStatus">Voice starts after the visitor clicks. Premium audio is used when available.</span>
             </div>
             <div class="progress-track" aria-hidden="true">
               <div class="progress-bar" id="tourProgress"></div>
@@ -1173,7 +1173,7 @@
             <div class="eyebrow">Founder note</div>
             <h2>Built by an AI and data science graduate student focused on real operational problems.</h2>
             <p>
-              TurnReady is created by Nitan Debnath, a masterâ€™s student at the University of Denver studying AI and Data Science.
+              TurnReady is created by Nitan Debnath, a masters student at the University of Denver studying AI and Data Science.
               The goal is simple: bring practical AI into property maintenance so teams can reduce costs, respond faster,
               and make daily operations less chaotic.
             </p>
@@ -1212,8 +1212,8 @@
 
     <footer>
       <div class="footer-inner">
-        <div>TurnReady Â© 2026 Â· AI maintenance operations for property teams</div>
-        <div>Free pilot Â· Privacy and terms available on request Â· Nitandebnath35@gmail.com</div>
+        <div>TurnReady (c) 2026 - AI maintenance operations for property teams</div>
+        <div>Free pilot - Privacy and terms available on request - Nitandebnath35@gmail.com</div>
       </div>
     </footer>
 
@@ -1225,7 +1225,7 @@
           urgent: true,
           items: [
             ["Resident note", "Pipe burst under the kitchen sink. Water is flooding the cabinet and floor."],
-            ["Captured details", "Unit 204 Â· Plumbing Â· Water Damage / Emergency"],
+            ["Captured details", "Unit 204 - Plumbing - Water Damage / Emergency"],
             ["Tenant experience", "The resident gets a clear message: avoid the affected area and wait for maintenance."]
           ]
         },
@@ -1235,7 +1235,7 @@
           urgent: false,
           items: [
             ["Category", "Plumbing: Pipe burst emergency"],
-            ["Priority", "Emergency Â· Same day response Â· Required code MNT-EMR"],
+            ["Priority", "Emergency - Same day response - Required code MNT-EMR"],
             ["Risk flags", "Water damage risk, possible mold concern, property-level emergency."]
           ]
         },
@@ -1244,7 +1244,7 @@
           badge: "COMMAND",
           urgent: false,
           items: [
-            ["Dashboard", "12 open requests Â· 3 urgent/high priority Â· 2 repeat plumbing patterns"],
+            ["Dashboard", "12 open requests - 3 urgent/high priority - 2 repeat plumbing patterns"],
             ["Duplicate detection", "AI notices similar leaks in the same building and recommends inspection."],
             ["Outcome", "Manager fixes root cause instead of dispatching repeated one-off repairs."]
           ]
@@ -1256,7 +1256,7 @@
           items: [
             ["Instructions", "Shut off water if needed, inspect supply line/P-trap, document before and after photos."],
             ["Parts", "Adjustable wrench, bucket, plumber tape, replacement supply line, P-trap."],
-            ["Status flow", "Assigned â†’ On the way â†’ In progress â†’ Completed."]
+            ["Status flow", "Assigned -> On the way -> In progress -> Completed."]
           ]
         },
         savings: {
@@ -1285,6 +1285,7 @@
       let currentTourScene = 0;
       let tourRunning = false;
       let tourUtterance = null;
+      let tourAudio = null;
 
       const tourNarration = [
         "Welcome to TurnReady. Think of it as an AI operations assistant for property maintenance. It helps property teams lower costs, prevent emergencies, keep tenants happier, and reduce wasted labor.",
@@ -1293,6 +1294,15 @@
         "Visual AI is part of the product roadmap. Maintenance photos can become damage summaries, before-and-after proof, repair verification, and cleaner documentation for the property team.",
         "Smart sensors make the system proactive. Leak sensors, humidity sensors, temperature alerts, access events, smoke alerts, and carbon monoxide signals can eventually create work orders before a small issue becomes expensive damage.",
         "Finally, the AI command center connects daily maintenance to business results. Managers can see repeat issues, urgent risk, labor waste, and cost-saving opportunities before they turn into bigger problems."
+      ];
+
+      const premiumAudioSources = [
+        "assets/voice/scene-1.mp3",
+        "assets/voice/scene-2.mp3",
+        "assets/voice/scene-3.mp3",
+        "assets/voice/scene-4.mp3",
+        "assets/voice/scene-5.mp3",
+        "assets/voice/scene-6.mp3"
       ];
 
       function renderDemo(key) {
@@ -1336,6 +1346,35 @@
       }
 
       function speakScene(index) {
+        if (tourAudio) {
+          tourAudio.pause();
+          tourAudio = null;
+        }
+
+        const premiumAudio = new Audio(premiumAudioSources[index]);
+        premiumAudio.preload = "auto";
+        premiumAudio.onended = () => advanceTour();
+        premiumAudio.onerror = () => speakSceneWithBrowserVoice(index);
+        tourAudio = premiumAudio;
+        premiumAudio.play()
+          .then(() => {
+            tourStatus.textContent = `Playing premium AI voice scene ${index + 1} of ${tourScenes.length}`;
+          })
+          .catch(() => speakSceneWithBrowserVoice(index));
+      }
+
+      function advanceTour() {
+        if (!tourRunning) return;
+        const next = currentTourScene + 1;
+        if (next >= tourScenes.length) {
+          tourRunning = false;
+          tourStatus.textContent = "AI voice tour complete. Replay anytime.";
+          return;
+        }
+        window.setTimeout(() => playTourScene(next), 850);
+      }
+
+      function speakSceneWithBrowserVoice(index) {
         if (!window.speechSynthesis) {
           tourStatus.textContent = "Voice is not supported in this browser, but the visual tour still works.";
           return;
@@ -1348,27 +1387,12 @@
         utterance.rate = 0.86;
         utterance.pitch = 0.98;
         utterance.volume = 1;
-        utterance.onend = () => {
-          if (!tourRunning) return;
-          const next = currentTourScene + 1;
-          if (next >= tourScenes.length) {
-            tourRunning = false;
-            tourStatus.textContent = "AI voice tour complete. Replay anytime.";
-            return;
-          }
-          window.setTimeout(() => playTourScene(next), 850);
-        };
+        utterance.onend = () => advanceTour();
         utterance.onerror = () => {
-          if (!tourRunning) return;
-          const next = currentTourScene + 1;
-          if (next < tourScenes.length) {
-            window.setTimeout(() => playTourScene(next), 1200);
-          } else {
-            tourRunning = false;
-            tourStatus.textContent = "AI voice tour complete. Replay anytime.";
-          }
+          advanceTour();
         };
         tourUtterance = utterance;
+        tourStatus.textContent = `Playing browser voice scene ${index + 1} of ${tourScenes.length}`;
         window.speechSynthesis.speak(utterance);
       }
 
@@ -1386,6 +1410,10 @@
       stopTour.addEventListener("click", () => {
         tourRunning = false;
         tourUtterance = null;
+        if (tourAudio) {
+          tourAudio.pause();
+          tourAudio = null;
+        }
         window.speechSynthesis?.cancel?.();
         tourStatus.textContent = "Tour stopped.";
       });
@@ -1412,4 +1440,5 @@
     </script>
   </body>
 </html>
+
 
