@@ -1,0 +1,1414 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TurnReady | AI Maintenance Operations for Property Teams</title>
+    <meta
+      name="description"
+      content="TurnReady is an AI-powered maintenance operations platform for property managers, built to reduce costs, detect urgent work orders, automate triage, and improve tenant response."
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #071018;
+        --panel: #0d1b25;
+        --panel-2: #102635;
+        --ink: #eef7ff;
+        --muted: #9eb3c3;
+        --line: rgba(158, 179, 195, 0.18);
+        --blue: #4bb8ff;
+        --cyan: #6df2ff;
+        --green: #39d98a;
+        --amber: #ffc857;
+        --red: #ff5f73;
+        --violet: #9d7bff;
+        --white: #ffffff;
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 15% 8%, rgba(75, 184, 255, 0.18), transparent 28%),
+          radial-gradient(circle at 75% 0%, rgba(57, 217, 138, 0.10), transparent 30%),
+          linear-gradient(180deg, #071018 0%, #0a121a 46%, #081018 100%);
+        color: var(--ink);
+        line-height: 1.5;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid var(--line);
+        background: rgba(7, 16, 24, 0.84);
+        backdrop-filter: blur(18px);
+      }
+
+      nav {
+        max-width: 1180px;
+        margin: 0 auto;
+        min-height: 72px;
+        padding: 0 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .brand-word {
+        white-space: nowrap;
+      }
+
+      .mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--blue), var(--green));
+        display: grid;
+        place-items: center;
+        color: #061019;
+        font-weight: 900;
+      }
+
+      .brand .accent {
+        color: var(--blue);
+      }
+
+      .navlinks {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .navlinks a {
+        text-decoration: none;
+      }
+
+      .navlinks a:hover {
+        color: var(--white);
+      }
+
+      .nav-cta {
+        border: 1px solid rgba(75, 184, 255, 0.45);
+        color: var(--ink);
+        background: rgba(75, 184, 255, 0.12);
+        border-radius: 8px;
+        padding: 10px 14px;
+        text-decoration: none;
+        font-weight: 800;
+      }
+
+      section {
+        scroll-margin-top: 88px;
+      }
+
+      .hero {
+        max-width: 1180px;
+        margin: 0 auto;
+        min-height: calc(100vh - 72px);
+        padding: 64px 22px 54px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+        gap: 42px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        color: var(--cyan);
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 760px;
+        font-size: clamp(42px, 7vw, 78px);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        margin: 22px 0 0;
+        max-width: 650px;
+        color: var(--muted);
+        font-size: 19px;
+      }
+
+      .hero-actions,
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .button {
+        appearance: none;
+        border: 0;
+        border-radius: 8px;
+        padding: 13px 18px;
+        background: linear-gradient(135deg, var(--blue), var(--green));
+        color: #051018;
+        font-weight: 900;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 0 14px 34px rgba(75, 184, 255, 0.18);
+      }
+
+      .button.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        box-shadow: none;
+      }
+
+      .button.slim {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+
+      .outcome-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 30px;
+      }
+
+      .outcome {
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 8px;
+        padding: 12px;
+      }
+
+      .outcome strong {
+        display: block;
+        color: var(--ink);
+        font-size: 13px;
+      }
+
+      .outcome span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .hero-visual {
+        position: relative;
+      }
+
+      .phone-shell {
+        max-width: 410px;
+        margin: 0 auto;
+        border-radius: 32px;
+        padding: 12px;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.04));
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: var(--shadow);
+      }
+
+      .phone-screen {
+        border-radius: 24px;
+        overflow: hidden;
+        background: #071018;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .app-top {
+        padding: 18px;
+        background: linear-gradient(135deg, #0f2942, #153b5a);
+      }
+
+      .app-brand {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        font-size: 18px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 5px 9px;
+        font-size: 11px;
+        font-weight: 900;
+        color: #051018;
+        background: var(--green);
+      }
+
+      .ai-greeting {
+        margin-top: 18px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 14px;
+      }
+
+      .ai-greeting strong {
+        display: block;
+        font-size: 18px;
+      }
+
+      .ai-greeting span {
+        color: rgba(238, 247, 255, 0.72);
+        font-size: 12px;
+      }
+
+      .app-body {
+        padding: 16px;
+      }
+
+      .request-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 12px;
+      }
+
+      .request-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 10px;
+      }
+
+      .request-title {
+        font-weight: 900;
+      }
+
+      .request-sub {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      .urgent {
+        background: rgba(255, 95, 115, 0.16);
+        color: #ff8fa0;
+        border: 1px solid rgba(255, 95, 115, 0.34);
+      }
+
+      .signal-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .signal {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .signal b {
+        display: block;
+        font-size: 18px;
+      }
+
+      .signal span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 74px 22px;
+      }
+
+      .section-head {
+        max-width: 780px;
+        margin-bottom: 28px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(30px, 4.5vw, 52px);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .section-head p {
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 17px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.045);
+      }
+
+      .card.feature {
+        min-height: 190px;
+      }
+
+      .icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        background: rgba(75, 184, 255, 0.12);
+        border: 1px solid rgba(75, 184, 255, 0.24);
+        color: var(--cyan);
+        font-weight: 900;
+        margin-bottom: 14px;
+      }
+
+      h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+
+      p {
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .demo {
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(75, 184, 255, 0.06), rgba(255, 255, 255, 0.02));
+      }
+
+      .cinema {
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background:
+          linear-gradient(180deg, rgba(157, 123, 255, 0.12), rgba(75, 184, 255, 0.05)),
+          #061019;
+      }
+
+      .cinema-stage {
+        min-height: 580px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        overflow: hidden;
+        position: relative;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(75, 184, 255, 0.28), transparent 28%),
+          radial-gradient(circle at 80% 10%, rgba(57, 217, 138, 0.18), transparent 28%),
+          linear-gradient(135deg, #071018, #0d1b25 58%, #061019);
+        box-shadow: var(--shadow);
+      }
+
+      .cinema-scene {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(320px, 1.08fr);
+        gap: 22px;
+        align-items: center;
+        padding: clamp(24px, 5vw, 56px);
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+        pointer-events: none;
+        transition: opacity 520ms ease, transform 520ms ease;
+      }
+
+      .cinema-scene.active {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
+
+      .ai-orb {
+        width: min(280px, 62vw);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        margin: 0 auto;
+        background:
+          radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.92), rgba(109, 242, 255, 0.56) 22%, rgba(75, 184, 255, 0.16) 47%, transparent 68%),
+          conic-gradient(from 80deg, rgba(75, 184, 255, 0.18), rgba(57, 217, 138, 0.38), rgba(157, 123, 255, 0.22), rgba(75, 184, 255, 0.18));
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow:
+          0 0 44px rgba(75, 184, 255, 0.26),
+          inset 0 0 44px rgba(255, 255, 255, 0.12);
+        position: relative;
+        animation: breathe 3.8s ease-in-out infinite;
+      }
+
+      .ai-orb::before,
+      .ai-orb::after {
+        content: "";
+        position: absolute;
+        inset: 15%;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      .ai-orb::after {
+        inset: 31%;
+        border-color: rgba(57, 217, 138, 0.38);
+      }
+
+      @keyframes breathe {
+        0%, 100% { transform: scale(0.985); filter: saturate(1); }
+        50% { transform: scale(1.035); filter: saturate(1.22); }
+      }
+
+      .scene-copy {
+        max-width: 620px;
+      }
+
+      .scene-copy h3 {
+        font-size: clamp(32px, 5vw, 58px);
+        line-height: 1;
+        margin-bottom: 16px;
+      }
+
+      .scene-copy p {
+        font-size: 18px;
+        max-width: 560px;
+      }
+
+      .scene-points {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .scene-point {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .cinema-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-top: 18px;
+      }
+
+      .cinema-status {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .progress-track {
+        margin-top: 18px;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.10);
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 16.66%;
+        background: linear-gradient(90deg, var(--blue), var(--green));
+        transition: width 420ms ease;
+      }
+
+      .demo-layout {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .demo-tabs {
+        display: grid;
+        gap: 10px;
+      }
+
+      .demo-tab {
+        text-align: left;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 15px;
+        cursor: pointer;
+      }
+
+      .demo-tab.active {
+        border-color: rgba(75, 184, 255, 0.65);
+        background: rgba(75, 184, 255, 0.12);
+      }
+
+      .demo-tab strong {
+        display: block;
+        font-size: 15px;
+      }
+
+      .demo-tab span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .demo-stage {
+        min-height: 450px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(135deg, rgba(75, 184, 255, 0.12), rgba(57, 217, 138, 0.06)),
+          var(--panel);
+        padding: 22px;
+      }
+
+      .stage-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+
+      .stage-title h3 {
+        font-size: 24px;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 12px;
+      }
+
+      .timeline-item {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: rgba(7, 16, 24, 0.55);
+      }
+
+      .timeline-item small {
+        display: block;
+        color: var(--cyan);
+        font-weight: 900;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .price {
+        font-size: 34px;
+        color: var(--ink);
+        font-weight: 900;
+        margin: 8px 0;
+      }
+
+      .list {
+        padding: 0;
+        margin: 18px 0 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .list li::before {
+        content: "✓";
+        color: var(--green);
+        font-weight: 900;
+        margin-right: 8px;
+      }
+
+      .founder {
+        display: grid;
+        grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .portrait-card {
+        background: #000;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        min-height: 300px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .initials {
+        width: 112px;
+        height: 112px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        display: grid;
+        place-items: center;
+        margin: 0 auto 16px;
+        font-size: 38px;
+        font-weight: 900;
+      }
+
+      .founder-photo {
+        width: min(270px, 72vw);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+        margin: 0 auto 18px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.48);
+        background: #000;
+      }
+
+      .contact-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .field,
+      .input,
+      .textarea {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 13px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .input,
+      .textarea {
+        width: 100%;
+        color: var(--ink);
+        font-family: inherit;
+        outline: none;
+      }
+
+      .input::placeholder,
+      .textarea::placeholder {
+        color: var(--muted);
+      }
+
+      .input:focus,
+      .textarea:focus {
+        border-color: rgba(75, 184, 255, 0.75);
+        box-shadow: 0 0 0 3px rgba(75, 184, 255, 0.12);
+      }
+
+      .textarea {
+        resize: vertical;
+      }
+
+      .field.wide {
+        grid-column: 1 / -1;
+        min-height: 92px;
+      }
+
+      .form-note {
+        color: var(--green);
+        margin-top: 12px;
+        min-height: 20px;
+        font-size: 13px;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        padding: 28px 22px;
+      }
+
+      .footer-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 940px) {
+        .hero,
+        .demo-layout,
+        .founder {
+          grid-template-columns: 1fr;
+        }
+
+        .outcome-strip,
+        .grid,
+        .pricing-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .cinema-scene {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 660px) {
+        nav {
+          min-height: 64px;
+        }
+
+        .navlinks {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 44px;
+        }
+
+        .outcome-strip,
+        .grid,
+        .pricing-grid,
+        .contact-panel,
+        .signal-grid,
+        .scene-points {
+          grid-template-columns: 1fr;
+        }
+
+        .phone-shell {
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a class="brand" href="#top" aria-label="TurnReady home">
+          <span class="mark">T</span>
+          <span class="brand-word">Turn<span class="accent">Ready</span></span>
+        </a>
+        <div class="navlinks" aria-label="Main navigation">
+          <a href="#features">AI Features</a>
+          <a href="#ai-tour">Voice Tour</a>
+          <a href="#demo">Demo</a>
+          <a href="#pricing">Free Version</a>
+          <a href="#security">Security</a>
+          <a class="nav-cta" href="#contact">Book Demo</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <div class="eyebrow">AI maintenance operations for property teams</div>
+          <h1 id="hero-title">Predict issues. Automate work orders. Respond faster.</h1>
+          <p class="lead">
+            TurnReady is a modern maintenance platform built to help property managers reduce emergency costs,
+            detect urgent work orders, route workers faster, and keep tenants informed from request to closeout.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#demo">See the AI demo</a>
+            <a class="button secondary" href="#contact">Join the free pilot</a>
+          </div>
+          <div class="outcome-strip" aria-label="Property management outcomes">
+            <div class="outcome"><strong>Lower costs</strong><span>Catch repeat issues early</span></div>
+            <div class="outcome"><strong>Fewer emergencies</strong><span>Detect urgent risk fast</span></div>
+            <div class="outcome"><strong>Happier tenants</strong><span>Clearer updates</span></div>
+            <div class="outcome"><strong>Less labor waste</strong><span>Prepared workers</span></div>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="TurnReady app dashboard preview">
+          <div class="phone-shell">
+            <div class="phone-screen">
+              <div class="app-top">
+                <div class="app-brand">
+                  <div>Turn<span style="color: var(--blue)">Ready</span></div>
+                  <span class="pill">AI ON</span>
+                </div>
+                <div class="ai-greeting">
+                  <strong>Good afternoon, Alex.</strong>
+                  <span>AI is watching for urgent work, cost risk, and faster routing.</span>
+                </div>
+              </div>
+              <div class="app-body">
+                <div class="request-card">
+                  <div class="request-head">
+                    <div>
+                      <div class="request-title">Plumbing: Pipe burst emergency</div>
+                      <div class="request-sub">Unit 204 · Water damage risk</div>
+                    </div>
+                    <span class="pill urgent">URGENT</span>
+                  </div>
+                  <p>AI detected standing water and pipe burst language. Route to on-call maintenance.</p>
+                </div>
+                <div class="signal-grid">
+                  <div class="signal"><b>4</b><span>Similar issues</span></div>
+                  <div class="signal"><b>$650</b><span>Risk flagged</span></div>
+                  <div class="signal"><b>12m</b><span>Triage time</span></div>
+                  <div class="signal"><b>92%</b><span>AI confidence</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="wrap" id="features">
+        <div class="section-head">
+          <div class="eyebrow">One intelligent maintenance system</div>
+          <h2>Everything property teams need to move from reactive repairs to predictive operations.</h2>
+          <p>
+            TurnReady combines resident requests, worker workflows, AI triage, visual evidence, automation, and future
+            sensor alerts into one maintenance command center.
+          </p>
+        </div>
+        <div class="grid">
+          <article class="card feature">
+            <div class="icon">AI</div>
+            <h3>AI Work Order Triage</h3>
+            <p>Automatically detects category, urgency, risk flags, worker skill code, estimated response window, and resident update text.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon">!</div>
+            <h3>Urgent Work Detection</h3>
+            <p>Flags floods, burst pipes, smoke, sparking, sewer backups, carbon monoxide, broken locks, and safety risks.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon">VI</div>
+            <h3>Visual AI Readiness</h3>
+            <p>Designed for photo-based damage summaries, before/after verification, and repair documentation.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon">AU</div>
+            <h3>Automation</h3>
+            <p>Auto-prioritize work, recommend assignments, draft updates, and prepare workers before arrival.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon">SN</div>
+            <h3>Smart Sensors</h3>
+            <p>Future-ready foundation for leak, temperature, humidity, access, smoke, and carbon monoxide events.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon">$</div>
+            <h3>Cost Reduction Insights</h3>
+            <p>Identifies repeated issues, avoidable emergencies, labor waste, and property-level maintenance patterns.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cinema" id="ai-tour">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow">AI voice tour</div>
+            <h2>A cinematic product walkthrough for visitors and LinkedIn traffic.</h2>
+            <p>
+              Visitors click once, then TurnReady presents itself like a guided AI demo with voice narration,
+              visual scenes, and feature-by-feature storytelling.
+            </p>
+            <div class="cinema-controls">
+              <button class="button" id="startTour" type="button">Start AI voice tour</button>
+              <button class="button secondary" id="stopTour" type="button">Stop tour</button>
+              <span class="cinema-status" id="tourStatus">Voice starts after the visitor clicks.</span>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-bar" id="tourProgress"></div>
+            </div>
+          </div>
+
+          <div class="cinema-stage" aria-live="polite">
+            <article class="cinema-scene active" data-scene="0">
+              <div class="ai-orb" aria-hidden="true"></div>
+              <div class="scene-copy">
+                <div class="eyebrow">Scene 1</div>
+                <h3>Welcome to TurnReady.</h3>
+                <p>TurnReady is an AI-powered maintenance operations platform built for property managers who want lower costs, fewer emergencies, happier tenants, and less labor waste.</p>
+                <div class="scene-points">
+                  <div class="scene-point">Mobile-first maintenance workflow</div>
+                  <div class="scene-point">Resident, admin, office, and worker roles</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cinema-scene" data-scene="1">
+              <div class="ai-orb" aria-hidden="true"></div>
+              <div class="scene-copy">
+                <div class="eyebrow">Scene 2</div>
+                <h3>AI detects urgent work.</h3>
+                <p>When a resident reports a burst pipe, smoke, sewer backup, carbon monoxide issue, or broken lock, TurnReady flags the request as urgent and routes it for emergency response.</p>
+                <div class="scene-points">
+                  <div class="scene-point">Emergency priority detection</div>
+                  <div class="scene-point">Risk flags for safety and water damage</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cinema-scene" data-scene="2">
+              <div class="ai-orb" aria-hidden="true"></div>
+              <div class="scene-copy">
+                <div class="eyebrow">Scene 3</div>
+                <h3>Automation prepares the team.</h3>
+                <p>The system suggests the maintenance category, worker skill code, response window, resident update, and parts list before anyone starts typing long notes.</p>
+                <div class="scene-points">
+                  <div class="scene-point">Auto triage and routing</div>
+                  <div class="scene-point">Worker instructions and parts</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cinema-scene" data-scene="3">
+              <div class="ai-orb" aria-hidden="true"></div>
+              <div class="scene-copy">
+                <div class="eyebrow">Scene 4</div>
+                <h3>Visual AI turns photos into evidence.</h3>
+                <p>TurnReady is designed for before-and-after photos, future image diagnosis, repair verification, and cleaner documentation for managers, workers, and tenants.</p>
+                <div class="scene-points">
+                  <div class="scene-point">Photo-based damage summaries</div>
+                  <div class="scene-point">Completion proof and audit trail</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cinema-scene" data-scene="4">
+              <div class="ai-orb" aria-hidden="true"></div>
+              <div class="scene-copy">
+                <div class="eyebrow">Scene 5</div>
+                <h3>Smart sensors catch problems earlier.</h3>
+                <p>The roadmap includes leak, humidity, temperature, access, smoke, and carbon monoxide sensor events that can become work orders before the damage grows.</p>
+                <div class="scene-points">
+                  <div class="scene-point">Leak and humidity signals</div>
+                  <div class="scene-point">Temperature and access alerts</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cinema-scene" data-scene="5">
+              <div class="ai-orb" aria-hidden="true"></div>
+              <div class="scene-copy">
+                <div class="eyebrow">Scene 6</div>
+                <h3>Managers see the business impact.</h3>
+                <p>The AI command center highlights repeat issues, urgent work, labor waste, and cost-saving opportunities so property teams can move from reactive repairs to predictive operations.</p>
+                <div class="scene-points">
+                  <div class="scene-point">Lower emergency spend</div>
+                  <div class="scene-point">Faster response and happier tenants</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo" id="demo">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow">Interactive sales demo</div>
+            <h2>Show a property manager the full AI maintenance loop in under two minutes.</h2>
+            <p>
+              This website demo mirrors the app flow: tenant request, AI urgency detection, admin command center,
+              worker instructions, and cost-saving insight.
+            </p>
+          </div>
+
+          <div class="demo-layout">
+            <div class="demo-tabs" role="tablist" aria-label="TurnReady demo flow">
+              <button class="demo-tab active" data-demo="resident" type="button">
+                <strong>1. Resident Request</strong>
+                <span>Tenant reports a pipe burst and flooding.</span>
+              </button>
+              <button class="demo-tab" data-demo="triage" type="button">
+                <strong>2. AI Triage</strong>
+                <span>TurnReady detects emergency plumbing and water damage risk.</span>
+              </button>
+              <button class="demo-tab" data-demo="admin" type="button">
+                <strong>3. Admin Command Center</strong>
+                <span>Manager sees urgent/high work and duplicate property patterns.</span>
+              </button>
+              <button class="demo-tab" data-demo="worker" type="button">
+                <strong>4. Worker Workflow</strong>
+                <span>Worker receives instructions, parts, and photo checklist.</span>
+              </button>
+              <button class="demo-tab" data-demo="savings" type="button">
+                <strong>5. Cost Insight</strong>
+                <span>AI links repeat leaks to preventable emergency spend.</span>
+              </button>
+            </div>
+
+            <div class="demo-stage" aria-live="polite">
+              <div class="stage-title">
+                <h3 id="demo-title">Resident submits an urgent request</h3>
+                <span class="pill urgent" id="demo-badge">EMERGENCY</span>
+              </div>
+              <div class="timeline" id="demo-content"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="wrap" id="pricing">
+        <div class="section-head">
+          <div class="eyebrow">Free pilot version</div>
+          <h2>Start free while the product learns what property managers need most.</h2>
+          <p>
+            The first website version should invite pilot users, not force pricing too early. Once you learn what managers
+            value, pricing can be shaped around units, properties, and automation level.
+          </p>
+        </div>
+        <div class="pricing-grid">
+          <article class="card">
+            <h3>Free Pilot</h3>
+            <div class="price">$0</div>
+            <p>For early property managers willing to test and give feedback.</p>
+            <ul class="list">
+              <li>AI work-order demo</li>
+              <li>Resident, admin, worker flows</li>
+              <li>Maintenance categories</li>
+              <li>Feedback-based roadmap</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Future Pro</h3>
+            <div class="price">TBD</div>
+            <p>Pricing after real discovery with property teams.</p>
+            <ul class="list">
+              <li>Live work orders</li>
+              <li>Photo documentation</li>
+              <li>AI reports</li>
+              <li>Team routing</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Enterprise</h3>
+            <div class="price">Custom</div>
+            <p>For portfolios that need integrations, sensors, and support.</p>
+            <ul class="list">
+              <li>Smart sensor events</li>
+              <li>Custom automation</li>
+              <li>Security review</li>
+              <li>Portfolio analytics</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="wrap" id="security">
+        <div class="section-head">
+          <div class="eyebrow">Trust foundation</div>
+          <h2>Built around access control, auditability, and responsible AI positioning.</h2>
+          <p>
+            TurnReady is designed for role-based access, database permissions, private job photos, audit logs, and
+            human review for AI recommendations.
+          </p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Role-Based Access</h3>
+            <p>Residents, workers, office staff, and admins have different views and permissions.</p>
+          </article>
+          <article class="card">
+            <h3>Audit Logs</h3>
+            <p>Critical profile, work-order, and status changes are designed to be tracked.</p>
+          </article>
+          <article class="card">
+            <h3>Human-in-the-Loop AI</h3>
+            <p>AI helps prioritize and suggest action, while property teams stay in control.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="wrap" id="founder">
+        <div class="founder">
+          <div class="portrait-card" aria-label="Founder profile">
+            <div>
+              <img
+                class="founder-photo"
+                src="C:/Users/nitan/OneDrive/Pictures/Screenshots/Screenshot%202026-04-23%20125725.png"
+                alt="Nitan Debnath, founder of TurnReady"
+              />
+              <h3>Nitan Debnath</h3>
+              <p>Founder and builder of TurnReady</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Founder note</div>
+            <h2>Built by an AI and data science graduate student focused on real operational problems.</h2>
+            <p>
+              TurnReady is created by Nitan Debnath, a master’s student at the University of Denver studying AI and Data Science.
+              The goal is simple: bring practical AI into property maintenance so teams can reduce costs, respond faster,
+              and make daily operations less chaotic.
+            </p>
+            <div class="actions">
+              <a class="button secondary" href="#contact">Connect with Nitan</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="wrap" id="contact">
+        <div class="section-head">
+          <div class="eyebrow">Book a demo</div>
+          <h2>Invite early property managers to test the free version.</h2>
+          <p>
+            This form is a front-end demo for now. When you are ready, it can connect to Azure, Supabase, Firebase,
+            Formspree, or a CRM.
+          </p>
+        </div>
+        <form class="card" id="pilotForm">
+          <div class="contact-panel">
+            <input class="input" name="name" type="text" placeholder="Name" autocomplete="name" />
+            <input class="input" name="company" type="text" placeholder="Company / Property" autocomplete="organization" />
+            <input class="input" name="email" type="email" placeholder="Email" autocomplete="email" />
+            <input class="input" name="units" type="number" min="0" placeholder="Number of units" />
+            <textarea class="textarea field wide" name="message" rows="5" placeholder="What maintenance problem are you trying to solve?"></textarea>
+          </div>
+          <div class="actions">
+            <button class="button" type="submit">Prepare demo email</button>
+            <a class="button secondary" href="#demo">Replay demo</a>
+          </div>
+          <div class="form-note" id="formNote" aria-live="polite"></div>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <div>TurnReady © 2026 · AI maintenance operations for property teams</div>
+        <div>Free pilot · Privacy and terms available on request · Nitandebnath35@gmail.com</div>
+      </div>
+    </footer>
+
+    <script>
+      const demoData = {
+        resident: {
+          title: "Resident submits an urgent request",
+          badge: "EMERGENCY",
+          urgent: true,
+          items: [
+            ["Resident note", "Pipe burst under the kitchen sink. Water is flooding the cabinet and floor."],
+            ["Captured details", "Unit 204 · Plumbing · Water Damage / Emergency"],
+            ["Tenant experience", "The resident gets a clear message: avoid the affected area and wait for maintenance."]
+          ]
+        },
+        triage: {
+          title: "AI detects risk and routes the job",
+          badge: "AI TRIAGE",
+          urgent: false,
+          items: [
+            ["Category", "Plumbing: Pipe burst emergency"],
+            ["Priority", "Emergency · Same day response · Required code MNT-EMR"],
+            ["Risk flags", "Water damage risk, possible mold concern, property-level emergency."]
+          ]
+        },
+        admin: {
+          title: "Admin sees what needs attention first",
+          badge: "COMMAND",
+          urgent: false,
+          items: [
+            ["Dashboard", "12 open requests · 3 urgent/high priority · 2 repeat plumbing patterns"],
+            ["Duplicate detection", "AI notices similar leaks in the same building and recommends inspection."],
+            ["Outcome", "Manager fixes root cause instead of dispatching repeated one-off repairs."]
+          ]
+        },
+        worker: {
+          title: "Worker arrives prepared",
+          badge: "FAST RESPONSE",
+          urgent: false,
+          items: [
+            ["Instructions", "Shut off water if needed, inspect supply line/P-trap, document before and after photos."],
+            ["Parts", "Adjustable wrench, bucket, plumber tape, replacement supply line, P-trap."],
+            ["Status flow", "Assigned → On the way → In progress → Completed."]
+          ]
+        },
+        savings: {
+          title: "AI turns maintenance into cost intelligence",
+          badge: "SAVINGS",
+          urgent: false,
+          items: [
+            ["Cost signal", "$650+ avoidable emergency risk flagged from repeat water issues."],
+            ["Labor signal", "Worker gets the right parts before arrival, reducing repeat visits."],
+            ["Business value", "Lower costs, fewer emergencies, happier tenants, less labor waste."]
+          ]
+        }
+      };
+
+      const tabs = document.querySelectorAll(".demo-tab");
+      const title = document.querySelector("#demo-title");
+      const badge = document.querySelector("#demo-badge");
+      const content = document.querySelector("#demo-content");
+      const tourScenes = Array.from(document.querySelectorAll(".cinema-scene"));
+      const startTour = document.querySelector("#startTour");
+      const stopTour = document.querySelector("#stopTour");
+      const tourStatus = document.querySelector("#tourStatus");
+      const tourProgress = document.querySelector("#tourProgress");
+      const pilotForm = document.querySelector("#pilotForm");
+      const formNote = document.querySelector("#formNote");
+      let currentTourScene = 0;
+      let tourRunning = false;
+      let tourUtterance = null;
+
+      const tourNarration = [
+        "Welcome to TurnReady. Think of it as an AI operations assistant for property maintenance. It helps property teams lower costs, prevent emergencies, keep tenants happier, and reduce wasted labor.",
+        "Here is where TurnReady becomes powerful. When a resident reports a burst pipe, flooding, smoke, a sewer backup, carbon monoxide, or a broken lock, the system recognizes the urgency and pushes the work order toward emergency response.",
+        "Next, TurnReady reduces the typing and guessing. It suggests the maintenance category, the priority, the worker skill code, the response window, the resident update, and even the parts a worker may need before arriving.",
+        "Visual AI is part of the product roadmap. Maintenance photos can become damage summaries, before-and-after proof, repair verification, and cleaner documentation for the property team.",
+        "Smart sensors make the system proactive. Leak sensors, humidity sensors, temperature alerts, access events, smoke alerts, and carbon monoxide signals can eventually create work orders before a small issue becomes expensive damage.",
+        "Finally, the AI command center connects daily maintenance to business results. Managers can see repeat issues, urgent risk, labor waste, and cost-saving opportunities before they turn into bigger problems."
+      ];
+
+      function renderDemo(key) {
+        const data = demoData[key];
+        title.textContent = data.title;
+        badge.textContent = data.badge;
+        badge.className = data.urgent ? "pill urgent" : "pill";
+        content.innerHTML = data.items.map(([label, body]) => `
+          <div class="timeline-item">
+            <small>${label}</small>
+            <strong>${body}</strong>
+          </div>
+        `).join("");
+
+        tabs.forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.demo === key);
+        });
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => renderDemo(tab.dataset.demo));
+      });
+
+      renderDemo("resident");
+
+      function pickVoice() {
+        const voices = window.speechSynthesis?.getVoices?.() || [];
+        return voices.find((voice) => voice.lang === "en-US" && /natural|aria|jenny|guy|samantha|zira|ava|andrew/i.test(`${voice.name} ${voice.voiceURI}`))
+          || voices.find((voice) => voice.lang === "en-US")
+          || voices.find((voice) => voice.lang?.startsWith("en"))
+          || null;
+      }
+
+      function showTourScene(index) {
+        currentTourScene = index % tourScenes.length;
+        tourScenes.forEach((scene, sceneIndex) => {
+          scene.classList.toggle("active", sceneIndex === currentTourScene);
+        });
+        tourProgress.style.width = `${((currentTourScene + 1) / tourScenes.length) * 100}%`;
+        tourStatus.textContent = `Playing scene ${currentTourScene + 1} of ${tourScenes.length}`;
+      }
+
+      function speakScene(index) {
+        if (!window.speechSynthesis) {
+          tourStatus.textContent = "Voice is not supported in this browser, but the visual tour still works.";
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(tourNarration[index]);
+        utterance.voice = pickVoice();
+        utterance.lang = "en-US";
+        utterance.rate = 0.86;
+        utterance.pitch = 0.98;
+        utterance.volume = 1;
+        utterance.onend = () => {
+          if (!tourRunning) return;
+          const next = currentTourScene + 1;
+          if (next >= tourScenes.length) {
+            tourRunning = false;
+            tourStatus.textContent = "AI voice tour complete. Replay anytime.";
+            return;
+          }
+          window.setTimeout(() => playTourScene(next), 850);
+        };
+        utterance.onerror = () => {
+          if (!tourRunning) return;
+          const next = currentTourScene + 1;
+          if (next < tourScenes.length) {
+            window.setTimeout(() => playTourScene(next), 1200);
+          } else {
+            tourRunning = false;
+            tourStatus.textContent = "AI voice tour complete. Replay anytime.";
+          }
+        };
+        tourUtterance = utterance;
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function playTourScene(index) {
+        showTourScene(index);
+        speakScene(currentTourScene);
+      }
+
+      startTour.addEventListener("click", () => {
+        tourRunning = true;
+        window.speechSynthesis?.cancel?.();
+        playTourScene(0);
+      });
+
+      stopTour.addEventListener("click", () => {
+        tourRunning = false;
+        tourUtterance = null;
+        window.speechSynthesis?.cancel?.();
+        tourStatus.textContent = "Tour stopped.";
+      });
+
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = pickVoice;
+      }
+
+      pilotForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = new FormData(pilotForm);
+        const name = form.get("name") || "";
+        const company = form.get("company") || "";
+        const email = form.get("email") || "";
+        const units = form.get("units") || "";
+        const message = form.get("message") || "";
+        const subject = encodeURIComponent("TurnReady Free Pilot Demo");
+        const body = encodeURIComponent(
+          `Name: ${name}\nCompany / Property: ${company}\nEmail: ${email}\nUnits: ${units}\n\nMaintenance problem:\n${message}`
+        );
+        formNote.textContent = "Opening your email app with the demo request. Form connection can be added later.";
+        window.location.href = `mailto:Nitandebnath35@gmail.com?subject=${subject}&body=${body}`;
+      });
+    </script>
+  </body>
+</html>
